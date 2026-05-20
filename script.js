@@ -278,10 +278,9 @@ I bridge the gap between raw data pipelines and high-impact business insights.
     contact: () => `
 [Connect with Me]
 ------------------
-- Email:    andrewyoung626@gmail.com
-- Phone:    (801) 631-7100
 - LinkedIn: linkedin.com/in/andrew-young6/
 - GitHub:   github.com/ayoung626
+- Message:  Use the contact form at the bottom of the page!
 `,
     clear: () => {
       outputContainer.innerHTML = '';
