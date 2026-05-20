@@ -380,12 +380,6 @@ function initScrollAnimations() {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('appear');
-        
-        // If skill card, trigger bar animation
-        if (entry.target.classList.contains('skills-container')) {
-          animateSkillBars();
-        }
-        
         observer.unobserve(entry.target);
       }
     });
@@ -393,14 +387,6 @@ function initScrollAnimations() {
 
   animatedElements.forEach(element => {
     observer.observe(element);
-  });
-}
-
-function animateSkillBars() {
-  const bars = document.querySelectorAll('.skill-bar-fill');
-  bars.forEach(bar => {
-    const targetPercent = bar.getAttribute('data-percent');
-    bar.style.width = `${targetPercent}%`;
   });
 }
 
