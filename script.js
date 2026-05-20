@@ -477,6 +477,7 @@ function initContactForm() {
     // Verify basic checks
     const name = document.getElementById('form-name').value.trim();
     const email = document.getElementById('form-email').value.trim();
+    const subject = document.getElementById('form-subject').value.trim();
     const message = document.getElementById('form-message').value.trim();
 
     if (!name || !email || !message) {
@@ -495,14 +496,36 @@ function initContactForm() {
     submitBtn.disabled = true;
     submitBtn.innerText = 'Transmitting...';
 
-    // Simulate Server post call (2000ms delay)
-    setTimeout(() => {
-      // Fade out Form elements
+    // Real fetch request to FormSubmit AJAX endpoint (100% Free)
+    fetch('https://formsubmit.co/ajax/andrewyoung626@gmail.com', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        _subject: subject || 'Contact from Portfolio Website',
+        message: message
+      })
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error('Transmission failed');
+    })
+    .then(data => {
+      // Fade out Form elements and show custom success panel
       form.style.display = 'none';
       successOverlay.style.display = 'flex';
-      
-      // Clear inputs
       form.reset();
-    }, 1800);
+    })
+    .catch(error => {
+      alert('Transmission failed. Please verify your connection and try again.');
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'Transmit Message';
+    });
   });
 }
