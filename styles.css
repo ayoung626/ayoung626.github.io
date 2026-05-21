@@ -186,8 +186,9 @@ header {
 }
 header.scrolled {
   padding: 10px 0;
-  background-color: rgba(var(--bg-primary), 0.7);
-  backdrop-filter: blur(12px);
+  background-color: var(--card-bg);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   border-bottom: 1px solid var(--card-border);
 }
 nav {
@@ -1262,6 +1263,21 @@ footer {
   }
   .nav-links {
     display: none; /* Mobile menu collapsed by default */
+  }
+  .nav-links.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--card-border);
+    padding: 24px;
+    gap: 20px;
+    z-index: 99;
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(12px);
   }
   .mobile-menu-btn {
     display: block;

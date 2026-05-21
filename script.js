@@ -6,6 +6,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Initialize Global Elements
   initTheme();
+  initNavigation();
   initGlowCursor();
   initCanvasParticles();
   initTerminal();
@@ -13,6 +14,48 @@ document.addEventListener('DOMContentLoaded', () => {
   initProjectFilters();
   initContactForm();
 });
+
+/* ==========================================
+   Navigation Header Controls (Scroll & Mobile)
+   ========================================== */
+function initNavigation() {
+  const header = document.querySelector('header');
+  const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+  const navLinks = document.querySelector('.nav-links');
+
+  // Handle Scroll dynamic background
+  if (header) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+  }
+
+  // Handle Mobile Menu toggle
+  if (mobileMenuBtn && navLinks) {
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      navLinks.classList.toggle('active');
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (navLinks.classList.contains('active') && !navLinks.contains(e.target) && e.target !== mobileMenuBtn) {
+        navLinks.classList.remove('active');
+      }
+    });
+
+    // Close mobile menu when clicking a link
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+      });
+    });
+  }
+}
 
 /* ==========================================
    1. Theme Management (Midnight & Snow)
