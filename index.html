@@ -413,6 +413,126 @@
     </div>
   </section>
 
+  <!-- Yahtzee Simulator Section -->
+  <section id="simulator" class="fade-in">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-subtitle">Monte Carlo Analytics</span>
+        <h2 class="section-title">Yahtzee Strategy <span>Simulator</span></h2>
+      </div>
+      
+      <div class="simulator-grid">
+        
+        <!-- Control & Statistics Panel -->
+        <div class="simulator-control-panel glass-panel" style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
+          <h3 class="contact-card-title" style="margin-bottom: 0; display: flex; align-items: center; gap: 12px;">
+            <i data-lucide="sliders" style="color: var(--accent-cyan);"></i> Simulation Setup
+          </h3>
+          
+          <div class="control-group">
+            <label class="control-label" style="display: block; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 600;">Select Strategy</label>
+            <div class="strategy-selector" style="display: flex; flex-direction: column; gap: 8px;">
+              <button class="strategy-chip active" data-strategy="primitive">
+                <span class="strat-name">Primitive</span>
+                <span class="strat-desc">Scores first highest point match immediately</span>
+              </button>
+              <button class="strategy-chip" data-strategy="advanced">
+                <span class="strat-name">Advanced</span>
+                <span class="strat-desc">Tries for pairs, sets, and straights; smart rolls</span>
+              </button>
+              <button class="strategy-chip" data-strategy="advancedCustomOrder">
+                <span class="strat-name">Adv Custom Order</span>
+                <span class="strat-desc">Advanced logic with custom zero-fill ordering</span>
+              </button>
+              <button class="strategy-chip" data-strategy="advancedModeUpper">
+                <span class="strat-name">Adv Mode Upper</span>
+                <span class="strat-desc">Prioritizes dice modes for upper categories</span>
+              </button>
+              <button class="strategy-chip" data-strategy="advancedModeUpperPlus">
+                <span class="strat-name">Adv Mode Upper+</span>
+                <span class="strat-desc">Prioritizes high dice values in upper section for +35 bonus</span>
+              </button>
+            </div>
+          </div>
+          
+          <div class="control-group">
+            <div class="slider-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <label class="control-label" style="font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); font-weight: 600;">Replications (Games)</label>
+              <span id="replications-value" style="font-family: 'JetBrains Mono', monospace; color: var(--accent-cyan); font-weight: 700; font-size: 16px;">1,000</span>
+            </div>
+            <input type="range" id="replications-slider" min="100" max="10000" step="100" value="1000" class="simulator-slider" style="width: 100%; cursor: pointer;">
+          </div>
+          
+          <button id="run-simulation-btn" class="btn btn-primary run-btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; height: 50px; font-weight: 600;">
+            <span>Execute Simulation</span>
+            <i data-lucide="play" style="width: 18px; height: 18px;"></i>
+          </button>
+          
+          <div class="simulation-loading" id="sim-loading" style="display: none; align-items: center; justify-content: center; gap: 12px; color: var(--accent-cyan); font-family: 'JetBrains Mono', monospace; font-size: 14px; padding: 12px; background: rgba(6, 182, 212, 0.05); border-radius: 8px; border: 1px dashed var(--accent-cyan);">
+            <div class="spinner"></div>
+            <span>Running Monte Carlo replications...</span>
+          </div>
+          
+          <div class="simulator-stats-display" id="stats-display" style="border-top: 1px solid var(--card-border); padding-top: 24px;">
+            <h4 class="stats-title" style="font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="bar-chart-2" style="color: var(--accent-purple); width: 18px; height: 18px;"></i> Analytics Summary
+            </h4>
+            <div class="stats-cards" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="stat-card glass-panel" style="padding: 12px; display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.02);">
+                <span class="stat-card-label" style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 500;">Mean Score</span>
+                <span class="stat-card-value" id="stat-mean" style="font-size: 20px; font-weight: 800; font-family: 'Outfit', sans-serif; color: var(--accent-cyan);">-</span>
+              </div>
+              <div class="stat-card glass-panel" style="padding: 12px; display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.02);">
+                <span class="stat-card-label" style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 500;">95% Conf. Int.</span>
+                <span class="stat-card-value" id="stat-ci" style="font-size: 13px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--text-primary); margin-top: 4px;">-</span>
+              </div>
+              <div class="stat-card glass-panel" style="padding: 12px; display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.02);">
+                <span class="stat-card-label" style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 500;">Std. Deviation</span>
+                <span class="stat-card-value" id="stat-std" style="font-size: 18px; font-weight: 700; font-family: 'Outfit', sans-serif; color: var(--text-primary);">-</span>
+              </div>
+              <div class="stat-card glass-panel" style="padding: 12px; display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.02);">
+                <span class="stat-card-label" style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 500;">CPU Runtime</span>
+                <span class="stat-card-value" id="stat-time" style="font-size: 18px; font-weight: 700; font-family: 'Outfit', sans-serif; color: var(--accent-purple);">-</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Visualizations Panel -->
+        <div class="simulator-visuals-panel glass-panel" style="padding: 32px; display: flex; flex-direction: column; gap: 24px;">
+          <div class="visuals-tab-header" style="display: flex; gap: 24px; border-bottom: 1px solid var(--card-border); padding-bottom: 12px;">
+            <button class="tab-btn active" id="tab-dist" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 16px; font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--text-primary); padding: 4px 8px; position: relative;">
+              <i data-lucide="activity" style="width: 18px; height: 18px; color: var(--accent-cyan);"></i> Score Distribution
+            </button>
+            <button class="tab-btn" id="tab-cat" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 16px; font-family: 'Outfit', sans-serif; font-weight: 600; color: var(--text-secondary); padding: 4px 8px; transition: color 0.3s;">
+              <i data-lucide="grid" style="width: 18px; height: 18px; color: var(--text-secondary);"></i> Category Frequencies
+            </button>
+          </div>
+          
+          <!-- Tab 1: Distribution Canvas -->
+          <div class="visual-tab-content active" id="content-dist" style="display: flex; flex-direction: column; gap: 16px; height: 100%;">
+            <div class="canvas-container" style="position: relative; width: 100%; height: 350px; background: rgba(0,0,0,0.08); border-radius: 12px; border: 1px solid var(--card-border); overflow: hidden;">
+              <canvas id="distribution-canvas" style="display: block; width: 100%; height: 100%;"></canvas>
+              <div class="canvas-tooltip" id="chart-tooltip" style="position: absolute; display: none; padding: 8px 12px; background: rgba(15, 23, 42, 0.95); border: 1px solid var(--accent-cyan); border-radius: 8px; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 12px; pointer-events: none; z-index: 10; box-shadow: 0 4px 20px rgba(0,0,0,0.4); backdrop-filter: blur(8px);"></div>
+            </div>
+            <div class="chart-legend" style="display: flex; align-items: center; gap: 16px; justify-content: space-between; font-size: 13px; color: var(--text-secondary);">
+              <span class="legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="legend-dot color-main" style="width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));"></span>Score Frequency (Bell Curve)</span>
+              <span class="legend-text">Hover over bars to view individual outcomes and sample sizes.</span>
+            </div>
+          </div>
+          
+          <!-- Tab 2: Category Frequencies -->
+          <div class="visual-tab-content" id="content-cat" style="display: none; height: 100%;">
+            <div class="categories-metric-grid" id="cat-metric-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; max-height: 380px; overflow-y: auto; padding-right: 8px;">
+              <!-- Dynamically populated in JS -->
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
   <!-- Experience Section -->
   <section id="experience" class="fade-in">
     <div class="container">
@@ -602,6 +722,7 @@
 
   <!-- Script Modules -->
   <script src="script.js"></script>
+  <script src="yahtzee.js"></script>
   <script>
     // Initialize Lucide Icons for simple elegant rendering
     lucide.createIcons();
