@@ -433,24 +433,24 @@
             <label class="control-label" style="display: block; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 600;">Select Strategy</label>
             <div class="strategy-selector" style="display: flex; flex-direction: column; gap: 8px;">
               <button class="strategy-chip active" data-strategy="primitive">
-                <span class="strat-name">Primitive</span>
-                <span class="strat-desc">Scores first highest point match immediately</span>
+                <span class="strat-name">Primitive Baseline</span>
+                <span class="strat-desc">Acts on the very first roll of each turn. Selects and scores the highest available points match immediately, with zero re-rolls or risk calculation. Represents a basic benchmark strategy.</span>
               </button>
               <button class="strategy-chip" data-strategy="advanced">
-                <span class="strat-name">Advanced</span>
-                <span class="strat-desc">Tries for pairs, sets, and straights; smart rolls</span>
+                <span class="strat-name">Advanced Human-Like</span>
+                <span class="strat-desc">Simulates real player choices across all 3 rolls. Actively chases high-scoring sets (3/4 of a kind, full house) and consecutive straight alignments, keeping matching dice and re-rolling others.</span>
               </button>
               <button class="strategy-chip" data-strategy="advancedCustomOrder">
-                <span class="strat-name">Adv Custom Order</span>
-                <span class="strat-desc">Advanced logic with custom zero-fill ordering</span>
+                <span class="strat-name">Adv Optimized Zero-Fill</span>
+                <span class="strat-desc">Utilizes the Advanced rolls logic, but introduces a strategic zero-fill hierarchy for missed rounds. Fills low-value upper sections (Aces, Deuces) first, protecting high-value categories from zeros.</span>
               </button>
               <button class="strategy-chip" data-strategy="advancedModeUpper">
-                <span class="strat-name">Adv Mode Upper</span>
-                <span class="strat-desc">Prioritizes dice modes for upper categories</span>
+                <span class="strat-name">Adv Mode Upper Priority</span>
+                <span class="strat-desc">Adapts the Advanced model to prioritize the mathematical Mode (most frequent number) when filling upper categories. Incorporates smart Chance preservation on unsuccessful rolls.</span>
               </button>
               <button class="strategy-chip" data-strategy="advancedModeUpperPlus">
-                <span class="strat-name">Adv Mode Upper+</span>
-                <span class="strat-desc">Prioritizes high dice values in upper section for +35 bonus</span>
+                <span class="strat-name">Adv Aggressive Upper+</span>
+                <span class="strat-desc">Specifically optimized to secure the +35 Upper Section Bonus. When rolling multiple high-value dice (4s, 5s, 6s), it actively prioritizes upper category blocks over three/four of a kind to hit the 63-point threshold.</span>
               </button>
             </div>
           </div>
