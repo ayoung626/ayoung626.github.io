@@ -472,30 +472,6 @@
             <div class="spinner"></div>
             <span>Running Monte Carlo replications...</span>
           </div>
-          
-          <div class="simulator-stats-display" id="stats-display" style="border-top: 1px solid var(--card-border); padding-top: 24px;">
-            <h4 class="stats-title" style="font-size: 16px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-              <i data-lucide="bar-chart-2" style="color: var(--accent-purple); width: 18px; height: 18px;"></i> Analytics Summary
-            </h4>
-            <div class="stats-cards" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-              <div class="stat-card glass-panel" style="padding: 12px; display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.02);">
-                <span class="stat-card-label" style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 500;">Mean Score</span>
-                <span class="stat-card-value" id="stat-mean" style="font-size: 20px; font-weight: 800; font-family: 'Outfit', sans-serif; color: var(--accent-cyan);">-</span>
-              </div>
-              <div class="stat-card glass-panel" style="padding: 12px; display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.02);">
-                <span class="stat-card-label" style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 500;">95% Conf. Int.</span>
-                <span class="stat-card-value" id="stat-ci" style="font-size: 13px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--text-primary); margin-top: 4px;">-</span>
-              </div>
-              <div class="stat-card glass-panel" style="padding: 12px; display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.02);">
-                <span class="stat-card-label" style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 500;">Std. Deviation</span>
-                <span class="stat-card-value" id="stat-std" style="font-size: 18px; font-weight: 700; font-family: 'Outfit', sans-serif; color: var(--text-primary);">-</span>
-              </div>
-              <div class="stat-card glass-panel" style="padding: 12px; display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.02);">
-                <span class="stat-card-label" style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 500;">CPU Runtime</span>
-                <span class="stat-card-value" id="stat-time" style="font-size: 18px; font-weight: 700; font-family: 'Outfit', sans-serif; color: var(--accent-purple);">-</span>
-              </div>
-            </div>
-          </div>
         </div>
         
         <!-- Visualizations Panel -->
@@ -525,6 +501,31 @@
           <div class="visual-tab-content" id="content-cat" style="display: none; height: 100%;">
             <div class="categories-metric-grid" id="cat-metric-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; max-height: 380px; overflow-y: auto; padding-right: 8px;">
               <!-- Dynamically populated in JS -->
+            </div>
+          </div>
+          
+          <!-- Analytics Summary moved to sit under the visualizations for perfect column balance -->
+          <div class="simulator-stats-display" id="stats-display" style="border-top: 1px solid var(--card-border); padding-top: 20px; margin-top: auto;">
+            <h4 class="stats-title" style="font-size: 15px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="bar-chart-2" style="color: var(--accent-purple); width: 18px; height: 18px;"></i> Analytics Summary
+            </h4>
+            <div class="stats-cards">
+              <div class="stat-card glass-panel" style="padding: 12px; display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.02);">
+                <span class="stat-card-label" style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 500;">Mean Score</span>
+                <span class="stat-card-value" id="stat-mean" style="font-size: 20px; font-weight: 800; font-family: 'Outfit', sans-serif; color: var(--accent-cyan);">-</span>
+              </div>
+              <div class="stat-card glass-panel" style="padding: 12px; display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.02);">
+                <span class="stat-card-label" style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 500;">95% Conf. Int.</span>
+                <span class="stat-card-value" id="stat-ci" style="font-size: 13px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--text-primary); margin-top: 4px;">-</span>
+              </div>
+              <div class="stat-card glass-panel" style="padding: 12px; display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.02);">
+                <span class="stat-card-label" style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 500;">Std. Deviation</span>
+                <span class="stat-card-value" id="stat-std" style="font-size: 18px; font-weight: 700; font-family: 'Outfit', sans-serif; color: var(--text-primary);">-</span>
+              </div>
+              <div class="stat-card glass-panel" style="padding: 12px; display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.02);">
+                <span class="stat-card-label" style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); font-weight: 500;">CPU Runtime</span>
+                <span class="stat-card-value" id="stat-time" style="font-size: 18px; font-weight: 700; font-family: 'Outfit', sans-serif; color: var(--accent-purple);">-</span>
+              </div>
             </div>
           </div>
         </div>
