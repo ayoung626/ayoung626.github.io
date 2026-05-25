@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollAnimations();
   initProjectFilters();
   initContactForm();
+  initArchitectureModal();
 });
 
 /* ==========================================
@@ -557,4 +558,42 @@ function initContactForm() {
       submitBtn.innerText = 'Transmit Message';
     });
   });
+}
+
+/* ==========================================
+   8. AWS Enterprise Architecture Modal
+   ========================================== */
+function initArchitectureModal() {
+  const viewArchitectureBtn = document.getElementById('view-architecture');
+  const architectureModal = document.getElementById('architecture-modal');
+  const closeArchitectureModal = document.getElementById('close-architecture-modal');
+
+  if (viewArchitectureBtn && architectureModal) {
+    viewArchitectureBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      architectureModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+
+    const closeModal = () => {
+      architectureModal.classList.remove('active');
+      document.body.style.overflow = '';
+    };
+
+    if (closeArchitectureModal) {
+      closeArchitectureModal.addEventListener('click', closeModal);
+    }
+
+    architectureModal.addEventListener('click', (e) => {
+      if (e.target === architectureModal) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && architectureModal.classList.contains('active')) {
+        closeModal();
+      }
+    });
+  }
 }
