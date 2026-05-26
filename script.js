@@ -682,7 +682,8 @@ function drawRatingChart(canvas, history) {
   
   for (let i = 0; i < len; i++) {
     const x = len > 1 ? (i / (len - 1)) * (w - 24) + 12 : w / 2;
-    const y = h - ((history[i].rating - minRating) / (maxRating - minRating)) * (h - 20) - 10;
+    // Compress line vertically slightly (using h - 34 range and offset 20) to make room for bottom date labels
+    const y = h - ((history[i].rating - minRating) / (maxRating - minRating)) * (h - 34) - 20;
     points.push({ x, y, rating: history[i].rating, date: history[i].date });
   }
   
@@ -741,9 +742,25 @@ function drawRatingChart(canvas, history) {
   // Draw simple text ratings at start and end
   ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
   ctx.font = '9px monospace';
+  ctx.textAlign = 'left';
   ctx.fillText(points[0].rating, points[0].x - 4, points[0].y - 8);
   ctx.fillStyle = '#fff';
   ctx.fillText(lastPt.rating, lastPt.x - 10, lastPt.y - 10);
+
+  // Draw Date labels at the very bottom
+  const formatDateLabel = (dateStr) => {
+    if (!dateStr) return '';
+    const dateObj = new Date(dateStr + 'T00:00:00'); // Enforce local timezone parsing
+    return dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  };
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+  ctx.font = '8px var(--font-mono), monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText(formatDateLabel(points[0].date), 12, h - 4);
+
+  ctx.textAlign = 'right';
+  ctx.fillText(formatDateLabel(lastPt.date), w - 12, h - 4);
 }
 
 function loadLinkedInStreaks() {
