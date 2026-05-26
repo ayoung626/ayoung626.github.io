@@ -274,12 +274,12 @@ Available commands:
   clear       - Clear the screen buffer
 `,
     about: () => `
-[Andrew Young - BI Analyst, Data Engineer, & Cloud Architect]
------------------------------------------------------------
-I bridge the gap between raw data pipelines and high-impact business insights.
-- MS in Analytics (Georgia Tech, GPA: 4.0)
+[Andrew Young]
+--------------
+I build data tools, cloud pipelines, and interactive dashboards.
+- MS in Analytics graduate from Georgia Tech (GPA: 4.0)
 - AWS Certified Solutions Architect Associate
-- Passionate advocate of agentic AI workflows and developer operations automation.
+- Enjoy building simulators, digital board games, and workflow automations.
 `,
     skills: () => `
 [Technical Stack]
@@ -290,15 +290,11 @@ I bridge the gap between raw data pipelines and high-impact business insights.
 - Machine Learning: Scikit-learn, Tensorly, AI agent design (Bedrock)
 `,
     projects: () => `
-[Highlighted Projects]
------------------------
-1. Duel for Middle Earth
-   - Next.js/React/TypeScript digital board game engine translate.
-   - Built through an iterative agentic design loop.
-
-2. Yahtzee Strategy Simulator
-   - Advanced Python Monte Carlo engine evaluating millions of games.
-   - Designed for GT analytics research. Evaluates five core AI strategies.
+[Featured Projects]
+-------------------
+1. Duel for Middle Earth: Web-based digital board game built with Next.js/React.
+2. Yahtzee Simulator: Interactive Monte Carlo strategy simulator running in-browser.
+3. AWS Data Pipeline: Real-time serverless call center log ingestion and reporting.
 `,
     experience: () => `
 [Professional Experience]
@@ -391,10 +387,10 @@ I bridge the gap between raw data pipelines and high-impact business insights.
         const welcomeText = document.createElement('div');
         welcomeText.className = 'terminal-output';
         welcomeText.innerHTML = `
-Hi there! I'm Andrew Young. 
-Welcome to my interactive CLI. 
+Hi, I'm Andrew Young. Welcome to my portfolio! 
+I'm a developer and analyst focused on data tools and cloud pipelines. 
 
-Type <span style="color: var(--accent-cyan)">'help'</span> to explore my stats, projects, and work history, or simply scroll down to check out the modern GUI portfolio!
+Type <span style="color: var(--accent-cyan)">'help'</span> to see available commands, or simply scroll down to check out the site!
 `;
         outputContainer.appendChild(welcomeText);
         inputElement.value = '';
