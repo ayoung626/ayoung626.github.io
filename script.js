@@ -607,6 +607,7 @@ function loadChessStats() {
   const puzzleEl = document.getElementById('chess-puzzle-rating');
   const peakEl = document.getElementById('chess-puzzle-peak');
   const streakEl = document.getElementById('chess-streak');
+  const rushEl = document.getElementById('chess-rush-best');
   const updatedEl = document.getElementById('chess-last-updated');
 
   if (!puzzleEl) return;
@@ -619,6 +620,7 @@ function loadChessStats() {
     .then(data => {
       puzzleEl.innerText = data.puzzle_rating || 'N/A';
       peakEl.innerText = data.highest_puzzle_rating || 'N/A';
+      if (rushEl) rushEl.innerText = data.puzzle_rush_best || 'N/A';
       streakEl.innerText = data.active_game_streak !== undefined ? `${data.active_game_streak}d` : '0d';
 
       // Last updated
@@ -862,6 +864,9 @@ function loadStravaWorkouts() {
         const durMins = Math.floor((act.moving_time % 3600) / 60);
         const durStr = durHrs > 0 ? `${durHrs}h ${durMins}m` : `${durMins}m`;
 
+        const climbFeet = act.total_elevation_gain ? Math.round(act.total_elevation_gain * 3.28084) : 0;
+        const climbStr = climbFeet > 0 ? ` • ▲ ${climbFeet} ft` : '';
+
         item.innerHTML = `
           <div class="workout-info">
             <div class="workout-icon-box">
@@ -869,7 +874,7 @@ function loadStravaWorkouts() {
             </div>
             <div>
               <span class="workout-title">${act.name}</span>
-              <span class="workout-date">${dateStr} • ${act.type}</span>
+              <span class="workout-date">${dateStr} • ${act.type}${climbStr}</span>
             </div>
           </div>
           <div class="workout-stats-short">
@@ -891,9 +896,9 @@ function loadStravaWorkouts() {
       badgeEl.innerHTML = '<span class="demo-badge">Demo Mode</span>';
       
       const mockWorkouts = [
-        { name: 'Morning Trail Run', type: 'Run', distance: 8450, moving_time: 2940, date: new Date(Date.now() - 24 * 3600 * 1000) },
-        { name: 'Canyon Road Ride', type: 'Ride', distance: 34100, moving_time: 4620, date: new Date(Date.now() - 3 * 24 * 3600 * 1000) },
-        { name: 'Interval Pace Session', type: 'Run', distance: 6800, moving_time: 2180, date: new Date(Date.now() - 5 * 24 * 3600 * 1000) }
+        { name: 'Morning Trail Run', type: 'Run', distance: 8450, moving_time: 2940, total_elevation_gain: 320, date: new Date(Date.now() - 24 * 3600 * 1000) },
+        { name: 'Canyon Road Ride', type: 'Ride', distance: 34100, moving_time: 4620, total_elevation_gain: 450, date: new Date(Date.now() - 3 * 24 * 3600 * 1000) },
+        { name: 'Interval Pace Session', type: 'Run', distance: 6800, moving_time: 2180, total_elevation_gain: 0, date: new Date(Date.now() - 5 * 24 * 3600 * 1000) }
       ];
 
       mockWorkouts.forEach(act => {
@@ -909,6 +914,9 @@ function loadStravaWorkouts() {
         const durMins = Math.floor((act.moving_time % 3600) / 60);
         const durStr = durHrs > 0 ? `${durHrs}h ${durMins}m` : `${durMins}m`;
 
+        const climbFeet = act.total_elevation_gain ? Math.round(act.total_elevation_gain * 3.28084) : 0;
+        const climbStr = climbFeet > 0 ? ` • ▲ ${climbFeet} ft` : '';
+
         item.innerHTML = `
           <div class="workout-info">
             <div class="workout-icon-box">
@@ -916,7 +924,7 @@ function loadStravaWorkouts() {
             </div>
             <div>
               <span class="workout-title">${act.name}</span>
-              <span class="workout-date">${dateStr} • ${act.type}</span>
+              <span class="workout-date">${dateStr} • ${act.type}${climbStr}</span>
             </div>
           </div>
           <div class="workout-stats-short">

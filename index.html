@@ -179,24 +179,27 @@
               </a>
             </div>
             
-            <div class="activity-stats-grid">
-              <div class="metric-block">
-                <span class="metric-label">Puzzle Rating</span>
-                <span class="metric-value text-cyan" id="chess-puzzle-rating">-</span>
+            <div class="activity-stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+              <div class="metric-block" style="padding: 8px 4px;">
+                <span class="metric-label" style="font-size: 8.5px;">Rating</span>
+                <span class="metric-value text-cyan" id="chess-puzzle-rating" style="font-size: 16px;">-</span>
               </div>
-              <div class="metric-block">
-                <span class="metric-label">Peak Puzzles</span>
-                <span class="metric-value" id="chess-puzzle-peak">-</span>
+              <div class="metric-block" style="padding: 8px 4px;">
+                <span class="metric-label" style="font-size: 8.5px;">Peak</span>
+                <span class="metric-value" id="chess-puzzle-peak" style="font-size: 16px;">-</span>
               </div>
-              <div class="metric-block">
-                <span class="metric-label">Active Streak</span>
+              <div class="metric-block" style="padding: 8px 4px;">
+                <span class="metric-label" style="font-size: 8.5px;">Rush Peak</span>
+                <span class="metric-value text-pink" id="chess-rush-best" style="font-size: 16px;">-</span>
+              </div>
+              <div class="metric-block" style="padding: 8px 4px;">
+                <span class="metric-label" style="font-size: 8.5px;">Streak</span>
                 <div class="streak-badge-wrapper">
-                  <i data-lucide="flame" class="streak-icon active"></i>
-                  <span class="metric-value text-purple" id="chess-streak">-</span>
+                  <i data-lucide="flame" class="streak-icon active" style="width: 13px; height: 13px;"></i>
+                  <span class="metric-value text-purple" id="chess-streak" style="font-size: 16px;">-</span>
                 </div>
               </div>
             </div>
-
 
             <!-- Puzzle Rating Sparkline / Trend -->
             <div class="rating-chart-container" style="margin-top: 16px; display: none;" id="chess-chart-container">
