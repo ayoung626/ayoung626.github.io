@@ -153,6 +153,105 @@
         </div>
         
       </div>
+
+      <!-- Live Activity & Streaks Dashboard -->
+      <div class="activity-dashboard-container" style="margin-top: 48px;">
+        <div class="section-header" style="margin-bottom: 24px; text-align: left;">
+          <span class="section-subtitle">Live Data Pipelines</span>
+          <h2 class="section-title" style="font-size: 26px; text-align: left; margin: 0;">Activity <span>Dashboard</span></h2>
+        </div>
+        
+        <div class="activity-grid">
+          <!-- Chess.com Card -->
+          <div class="activity-card glass-panel chess-theme animate-glow">
+            <div class="activity-card-header">
+              <div class="activity-brand">
+                <div class="brand-icon-box">
+                  <i data-lucide="swords"></i>
+                </div>
+                <div>
+                  <h3 class="activity-title">Chess.com Stats</h3>
+                  <span class="activity-subtitle">Username: Cobalt626</span>
+                </div>
+              </div>
+              <a href="https://chess.com/member/Cobalt626" target="_blank" class="activity-link-btn" aria-label="View Chess.com Profile">
+                <i data-lucide="external-link"></i>
+              </a>
+            </div>
+            
+            <div class="activity-stats-grid">
+              <div class="metric-block">
+                <span class="metric-label">Puzzle Rating</span>
+                <span class="metric-value text-cyan" id="chess-puzzle-rating">-</span>
+              </div>
+              <div class="metric-block">
+                <span class="metric-label">Peak Puzzles</span>
+                <span class="metric-value" id="chess-puzzle-peak">-</span>
+              </div>
+              <div class="metric-block">
+                <span class="metric-label">Active Streak</span>
+                <div class="streak-badge-wrapper">
+                  <i data-lucide="flame" class="streak-icon active"></i>
+                  <span class="metric-value text-purple" id="chess-streak">-</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic Chess Details -->
+            <div class="activity-details-block" id="chess-details-block">
+              <div class="details-row">
+                <span>Rapid Rating:</span>
+                <strong id="chess-rapid-rating">-</strong>
+              </div>
+              <div class="details-row">
+                <span>Blitz Rating:</span>
+                <strong id="chess-blitz-rating">-</strong>
+              </div>
+              <div class="details-row">
+                <span>Record (W/L/D):</span>
+                <strong id="chess-rapid-record">-</strong>
+              </div>
+            </div>
+
+            <div class="activity-card-footer">
+              <span class="serverless-badge"><i data-lucide="cpu" style="width: 12px; height: 12px;"></i> GitHub Actions</span>
+              <span id="chess-last-updated" class="last-updated-text">Syncing...</span>
+            </div>
+          </div>
+
+
+
+          <!-- Strava Activities Card -->
+          <div class="activity-card glass-panel strava-theme animate-glow">
+            <div class="activity-card-header">
+              <div class="activity-brand">
+                <div class="brand-icon-box">
+                  <i data-lucide="activity"></i>
+                </div>
+                <div>
+                  <h3 class="activity-title">Strava Workouts</h3>
+                  <span class="activity-subtitle" id="strava-subtitle">Recent Training Logs</span>
+                </div>
+              </div>
+              <a href="https://www.strava.com" target="_blank" class="activity-link-btn" aria-label="View Strava Profile">
+                <i data-lucide="external-link"></i>
+              </a>
+            </div>
+
+            <!-- Recent Workouts List -->
+            <div class="strava-workouts-list" id="strava-workouts-list">
+              <div class="loading-state">
+                <span class="spinner"></span> Loading workouts...
+              </div>
+            </div>
+
+            <div class="activity-card-footer" style="margin-top: auto;">
+              <span class="serverless-badge" id="strava-badge"><i data-lucide="shield-check" style="width: 12px; height: 12px;"></i> Ready</span>
+              <span id="strava-last-updated" class="last-updated-text">Syncing...</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 

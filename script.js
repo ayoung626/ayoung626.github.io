@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initProjectFilters();
   initContactForm();
   initArchitectureModal();
+  initActivityDashboard();
 });
 
 /* ==========================================
@@ -593,3 +594,229 @@ function initArchitectureModal() {
     });
   }
 }
+
+/* ==========================================
+   9. Live Activity & Streaks Dashboard
+   ========================================== */
+function initActivityDashboard() {
+  loadChessStats();
+  loadStravaWorkouts();
+}
+
+function loadChessStats() {
+  const puzzleEl = document.getElementById('chess-puzzle-rating');
+  const peakEl = document.getElementById('chess-puzzle-peak');
+  const streakEl = document.getElementById('chess-streak');
+  const rapidEl = document.getElementById('chess-rapid-rating');
+  const blitzEl = document.getElementById('chess-blitz-rating');
+  const recordEl = document.getElementById('chess-rapid-record');
+  const updatedEl = document.getElementById('chess-last-updated');
+
+  if (!puzzleEl) return;
+
+  fetch('assets/data/chess.json')
+    .then(res => {
+      if (!res.ok) throw new Error('Data file not found');
+      return res.json();
+    })
+    .then(data => {
+      puzzleEl.innerText = data.puzzle_rating || 'N/A';
+      peakEl.innerText = data.highest_puzzle_rating || 'N/A';
+      streakEl.innerText = data.active_game_streak !== undefined ? `${data.active_game_streak}d` : '0d';
+      rapidEl.innerText = data.rapid_rating || 'N/A';
+      blitzEl.innerText = data.blitz_rating || 'N/A';
+
+      // Record formatting
+      const rec = data.rapid_record || {};
+      if (rec.win !== undefined && rec.loss !== undefined && rec.draw !== undefined) {
+        recordEl.innerText = `${rec.win}W / ${rec.loss}L / ${rec.draw}D`;
+      } else {
+        recordEl.innerText = 'N/A';
+      }
+
+      // Last updated
+      if (data.last_updated) {
+        const updateDate = new Date(data.last_updated);
+        updatedEl.innerText = `Updated: ${updateDate.toLocaleDateString()}`;
+      } else {
+        updatedEl.innerText = 'Updated: N/A';
+      }
+
+      // Re-trigger Lucide icons render for dynamic icons
+      if (window.lucide) window.lucide.createIcons();
+    })
+    .catch(err => {
+      console.warn('Could not load Chess.com data:', err);
+      updatedEl.innerText = 'Load failed';
+    });
+}
+
+function loadLinkedInStreaks() {
+  const gridEl = document.getElementById('linkedin-puzzles-grid');
+  const updatedEl = document.getElementById('linkedin-last-updated');
+
+  if (!gridEl) return;
+
+  fetch('assets/data/linkedin-games.json')
+    .then(res => {
+      if (!res.ok) throw new Error('Data file not found');
+      return res.json();
+    })
+    .then(data => {
+      gridEl.innerHTML = '';
+      
+      const games = data.games || {};
+      const gameKeys = Object.keys(games);
+      
+      if (gameKeys.length === 0) {
+        gridEl.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding:20px 0;">No streaks logged yet.</div>';
+        return;
+      }
+
+      gameKeys.forEach(key => {
+        const game = games[key];
+        const card = document.createElement('div');
+        card.className = 'puzzle-streak-card';
+        
+        let iconName = 'crown';
+        if (game.icon === 'map-pin') iconName = 'map-pin';
+        else if (game.icon === 'mountain') iconName = 'mountain';
+        else if (game.icon === 'sparkles') iconName = 'sparkles';
+
+        card.innerHTML = `
+          <i data-lucide="${iconName}" class="puzzle-icon" style="width:20px; height:20px; color:var(--accent-cyan);"></i>
+          <span class="puzzle-name">${game.name}</span>
+          <div class="streak-badge-wrapper">
+            <i data-lucide="flame" class="streak-icon ${game.streak > 0 ? 'active' : ''}" style="width:14px; height:14px;"></i>
+            <span style="font-weight:700; font-family:var(--font-mono); font-size:14px; color:var(--text-primary);">${game.streak}d</span>
+          </div>
+        `;
+        gridEl.appendChild(card);
+      });
+
+      if (data.lastUpdated) {
+        const updateDate = new Date(data.lastUpdated);
+        updatedEl.innerText = `Updated: ${updateDate.toLocaleDateString()}`;
+      } else {
+        updatedEl.innerText = 'Updated: N/A';
+      }
+
+      if (window.lucide) window.lucide.createIcons();
+    })
+    .catch(err => {
+      console.warn('Could not load LinkedIn streaks:', err);
+      gridEl.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding:20px 0;">Sync pending. Click bookmarklet on LinkedIn.</div>';
+      updatedEl.innerText = 'Sync pending';
+    });
+}
+
+function loadStravaWorkouts() {
+  const listEl = document.getElementById('strava-workouts-list');
+  const updatedEl = document.getElementById('strava-last-updated');
+  const subtitleEl = document.getElementById('strava-subtitle');
+  const badgeEl = document.getElementById('strava-badge');
+
+  if (!listEl) return;
+
+  // Try to load real workouts from assets/data/activities.json
+  fetch('assets/data/activities.json')
+    .then(res => {
+      if (!res.ok) throw new Error('Real activities not found');
+      return res.json();
+    })
+    .then(activities => {
+      listEl.innerHTML = '';
+      
+      if (activities.length === 0) {
+        listEl.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px 0;">No recent activities logged.</div>';
+        return;
+      }
+
+      const recent = activities.slice(0, 3);
+      recent.forEach(act => {
+        const item = document.createElement('div');
+        item.className = 'workout-item';
+        
+        const actDate = new Date(act.start_date_local || act.start_date);
+        const dateStr = actDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        
+        let typeIcon = 'footprints';
+        if (act.type === 'Ride') typeIcon = 'bike';
+        else if (act.type === 'Swim') typeIcon = 'waves';
+        else if (act.type === 'WeightTraining') typeIcon = 'dumbbell';
+
+        const distMiles = (act.distance * 0.000621371).toFixed(2);
+        const durHrs = Math.floor(act.moving_time / 3600);
+        const durMins = Math.floor((act.moving_time % 3600) / 60);
+        const durStr = durHrs > 0 ? `${durHrs}h ${durMins}m` : `${durMins}m`;
+
+        item.innerHTML = `
+          <div class="workout-info">
+            <div class="workout-icon-box">
+              <i data-lucide="${typeIcon}" style="width:20px; height:20px;"></i>
+            </div>
+            <div>
+              <span class="workout-title">${act.name}</span>
+              <span class="workout-date">${dateStr} • ${act.type}</span>
+            </div>
+          </div>
+          <div class="workout-stats-short">
+            <span class="workout-distance">${distMiles} mi</span>
+            <span class="workout-duration">${durStr}</span>
+          </div>
+        `;
+        listEl.appendChild(item);
+      });
+
+      badgeEl.innerHTML = '<i data-lucide="shield-check" style="width: 12px; height: 12px;"></i> Connected';
+      updatedEl.innerText = 'Synced';
+      if (window.lucide) window.lucide.createIcons();
+    })
+    .catch(() => {
+      // Fallback: Mock beautiful training logs in Demo Mode
+      listEl.innerHTML = '';
+      subtitleEl.innerText = 'Training Logs (Demo Mode)';
+      badgeEl.innerHTML = '<span class="demo-badge">Demo Mode</span>';
+      
+      const mockWorkouts = [
+        { name: 'Morning Trail Run', type: 'Run', distance: 8450, moving_time: 2940, date: new Date(Date.now() - 24 * 3600 * 1000) },
+        { name: 'Canyon Road Ride', type: 'Ride', distance: 34100, moving_time: 4620, date: new Date(Date.now() - 3 * 24 * 3600 * 1000) },
+        { name: 'Interval Pace Session', type: 'Run', distance: 6800, moving_time: 2180, date: new Date(Date.now() - 5 * 24 * 3600 * 1000) }
+      ];
+
+      mockWorkouts.forEach(act => {
+        const item = document.createElement('div');
+        item.className = 'workout-item';
+        
+        const dateStr = act.date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        let typeIcon = 'footprints';
+        if (act.type === 'Ride') typeIcon = 'bike';
+
+        const distMiles = (act.distance * 0.000621371).toFixed(2);
+        const durHrs = Math.floor(act.moving_time / 3600);
+        const durMins = Math.floor((act.moving_time % 3600) / 60);
+        const durStr = durHrs > 0 ? `${durHrs}h ${durMins}m` : `${durMins}m`;
+
+        item.innerHTML = `
+          <div class="workout-info">
+            <div class="workout-icon-box">
+              <i data-lucide="${typeIcon}" style="width:20px; height:20px;"></i>
+            </div>
+            <div>
+              <span class="workout-title">${act.name}</span>
+              <span class="workout-date">${dateStr} • ${act.type}</span>
+            </div>
+          </div>
+          <div class="workout-stats-short">
+            <span class="workout-distance">${distMiles} mi</span>
+            <span class="workout-duration">${durStr}</span>
+          </div>
+        `;
+        listEl.appendChild(item);
+      });
+
+      updatedEl.innerText = 'Demo Active';
+      if (window.lucide) window.lucide.createIcons();
+    });
+}
+

@@ -1,0 +1,9 @@
+{
+  "lastUpdated": "2026-05-25T18:00:00Z",
+  "games": {
+    "queens": { "name": "Queens", "streak": 0, "icon": "crown" },
+    "pinpoint": { "name": "Pinpoint", "streak": 0, "icon": "map-pin" },
+    "crossclimb": { "name": "Crossclimb", "streak": 0, "icon": "mountain" },
+    "tango": { "name": "Tango", "streak": 0, "icon": "sparkles" }
+  }
+}

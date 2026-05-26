@@ -1,0 +1,22 @@
+{
+    "username": "Cobalt626",
+    "puzzle_rating": "N/A",
+    "highest_puzzle_rating": 1674,
+    "puzzle_rush_best": 32,
+    "rapid_rating": 1181,
+    "blitz_rating": 1054,
+    "rapid_record": {
+        "win": 59,
+        "loss": 68,
+        "draw": 1
+    },
+    "blitz_record": {
+        "win": 35,
+        "loss": 42,
+        "draw": 2
+    },
+    "active_game_streak": 1,
+    "total_active_days": 1,
+    "total_games_analyzed": 1,
+    "last_updated": "2026-05-26T00:48:28.147258+00:00"
+}
