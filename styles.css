@@ -521,33 +521,10 @@ section {
 /* About Section */
 .about-grid {
   display: grid;
-  grid-template-columns: 0.8fr 1.2fr;
-  gap: 60px;
-  align-items: center;
-}
-.about-image-wrapper {
-  position: relative;
-  display: flex;
-  justify-content: center;
-}
-.about-image-card {
-  width: 100%;
-  max-width: 320px;
-  height: 380px;
-  border-radius: 20px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: var(--card-shadow);
-  border: 1px solid var(--card-border);
-}
-.about-image-card img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-.about-image-card:hover img {
-  transform: scale(1.05);
+  grid-template-columns: 1fr;
+  max-width: 800px;
+  margin: 0 auto;
+  gap: 40px;
 }
 
 .about-info {
@@ -1205,13 +1182,7 @@ footer {
   .terminal-widget {
     margin: 0 auto;
   }
-  .about-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-  .about-image-wrapper {
-    order: -1;
-  }
+
   .contact-grid {
     grid-template-columns: 1fr;
     gap: 48px;
