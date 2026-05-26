@@ -549,51 +549,7 @@ section {
 .about-image-card:hover img {
   transform: scale(1.05);
 }
-.about-image-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, transparent 40%, rgba(7, 10, 19, 0.8) 100%);
-  pointer-events: none;
-}
-.light-theme .about-image-card::after {
-  background: linear-gradient(to bottom, transparent 40%, rgba(255, 255, 255, 0.8) 100%);
-}
-.badge-certified {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.75);
-  border: 1px solid var(--accent-cyan);
-  padding: 8px 16px;
-  border-radius: 30px;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-  backdrop-filter: blur(5px);
-  z-index: 10;
-  text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.badge-certified:hover {
-  transform: translateX(-50%) scale(1.05);
-  border-color: var(--accent-purple);
-  background: rgba(0, 0, 0, 0.9);
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
-}
-.badge-certified svg {
-  width: 14px;
-  height: 14px;
-  fill: #ff9900;
-}
+
 .about-info {
   display: flex;
   flex-direction: column;
