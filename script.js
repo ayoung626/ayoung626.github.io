@@ -642,6 +642,18 @@ function loadChessStats() {
         updatedEl.innerText = 'Updated: N/A';
       }
 
+      // Render Puzzle Rating Trend Chart if history is available
+      const history = data.rating_history || [];
+      const chartContainer = document.getElementById('chess-chart-container');
+      const canvas = document.getElementById('chess-rating-chart');
+      
+      if (history.length >= 2 && chartContainer && canvas) {
+        chartContainer.style.display = 'block';
+        drawRatingChart(canvas, history);
+      } else if (chartContainer) {
+        chartContainer.style.display = 'none';
+      }
+
       // Re-trigger Lucide icons render for dynamic icons
       if (window.lucide) window.lucide.createIcons();
     })
@@ -649,6 +661,102 @@ function loadChessStats() {
       console.warn('Could not load Chess.com data:', err);
       updatedEl.innerText = 'Load failed';
     });
+}
+
+function drawRatingChart(canvas, history) {
+  const ctx = canvas.getContext('2d');
+  
+  // Set dimensions correctly for high-DPI displays (Retina screens)
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+  
+  const w = rect.width;
+  const h = rect.height;
+  
+  ctx.clearRect(0, 0, w, h);
+  
+  // Find Min/Max ratings for scaling
+  const ratings = history.map(item => item.rating);
+  let minRating = Math.min(...ratings);
+  let maxRating = Math.max(...ratings);
+  
+  // Add padding to top and bottom to make the chart look nice
+  const diff = maxRating - minRating;
+  const padding = diff === 0 ? 50 : Math.max(diff * 0.15, 20);
+  minRating -= padding;
+  maxRating += padding;
+  
+  // Build drawing coordinates
+  const points = [];
+  const len = history.length;
+  
+  for (let i = 0; i < len; i++) {
+    const x = len > 1 ? (i / (len - 1)) * (w - 24) + 12 : w / 2;
+    const y = h - ((history[i].rating - minRating) / (maxRating - minRating)) * (h - 20) - 10;
+    points.push({ x, y, rating: history[i].rating, date: history[i].date });
+  }
+  
+  // Draw glowing background fill gradient under the line
+  const fillGrad = ctx.createLinearGradient(0, 0, 0, h);
+  fillGrad.addColorStop(0, 'rgba(6, 182, 212, 0.15)');
+  fillGrad.addColorStop(1, 'rgba(6, 182, 212, 0.0)');
+  
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, h);
+  points.forEach(pt => ctx.lineTo(pt.x, pt.y));
+  ctx.lineTo(points[points.length - 1].x, h);
+  ctx.closePath();
+  ctx.fillStyle = fillGrad;
+  ctx.fill();
+  
+  // Draw the smooth line gradient
+  const lineGrad = ctx.createLinearGradient(0, 0, w, 0);
+  lineGrad.addColorStop(0, '#06b6d4'); // Cyan
+  lineGrad.addColorStop(1, '#8b5cf6'); // Purple
+  
+  ctx.beginPath();
+  ctx.moveTo(points[0].x, points[0].y);
+  
+  // Use Bezier curve for smooth charting if we have enough points, otherwise simple line
+  if (points.length >= 3) {
+    for (let i = 0; i < points.length - 1; i++) {
+      const xc = (points[i].x + points[i+1].x) / 2;
+      const yc = (points[i].y + points[i+1].y) / 2;
+      ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+    }
+    ctx.lineTo(points[points.length - 1].x, points[points.length - 1].y);
+  } else {
+    points.forEach(pt => ctx.lineTo(pt.x, pt.y));
+  }
+  
+  ctx.strokeStyle = lineGrad;
+  ctx.lineWidth = 2.5;
+  ctx.shadowColor = 'rgba(6, 182, 212, 0.35)';
+  ctx.shadowBlur = 6;
+  ctx.stroke();
+  
+  // Reset shadow for subsequent drawings
+  ctx.shadowBlur = 0;
+  
+  // Draw last data point highlight
+  const lastPt = points[points.length - 1];
+  ctx.beginPath();
+  ctx.arc(lastPt.x, lastPt.y, 4, 0, Math.PI * 2);
+  ctx.fillStyle = '#8b5cf6';
+  ctx.fill();
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  
+  // Draw simple text ratings at start and end
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+  ctx.font = '9px monospace';
+  ctx.fillText(points[0].rating, points[0].x - 4, points[0].y - 8);
+  ctx.fillStyle = '#fff';
+  ctx.fillText(lastPt.rating, lastPt.x - 10, lastPt.y - 10);
 }
 
 function loadLinkedInStreaks() {

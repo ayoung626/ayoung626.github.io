@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import requests
 from datetime import datetime, timezone, timedelta
@@ -9,91 +10,114 @@ USERNAME = "Cobalt626"
 CONTACT_EMAIL = "andrew.young.analytics@gmail.com"  
 OUTPUT_PATH = "assets/data/chess.json"
 
-# Set timezone to Mountain Time (UTC-6 or UTC-7) based on -06:00 offset in user metadata
+# Set timezone to Mountain Time (UTC-6)
 LOCAL_TZ = timezone(timedelta(hours=-6))
 
 def fetch_chess_data():
+    # User agent that looks like a browser is required for member pages/callbacks
     headers = {
-        "User-Agent": f"GitHubPagesIntegration/1.0 (contact: {CONTACT_EMAIL})"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
     
     print(f"Fetching Chess.com statistics for user: {USERNAME}")
     
-    # 1. Fetch Stats (Puzzle Ratings, Blitz, etc.)
+    # 1. Fetch Stats from the Callback stats endpoint (Gives current puzzle rating!)
+    callback_url = f"https://www.chess.com/callback/member/stats/{USERNAME}"
+    puzzle_rating = "N/A"
+    highest_puzzle_rating = "N/A"
+    puzzle_rush_best = "N/A"
+    
+    try:
+        res = requests.get(callback_url, headers=headers, timeout=15)
+        if res.status_code == 200:
+            data = res.json()
+            for item in data.get("stats", []):
+                if item.get("key") == "tactics":
+                    t_stats = item.get("stats", {})
+                    puzzle_rating = t_stats.get("rating", "N/A")
+                    highest_puzzle_rating = t_stats.get("highest_rating", "N/A")
+                elif item.get("key") == "tactics_challenge":
+                    puzzle_rush_best = item.get("stats", {}).get("highest_score", "N/A")
+        else:
+            print(f"Callback stats returned status: {res.status_code}")
+    except Exception as e:
+        print(f"Error fetching stats from callback: {e}")
+
+    # 2. Fetch public API stats to fetch Blitz/Rapid records and ratings (PubAPI is still great for this!)
     stats_url = f"https://api.chess.com/pub/player/{USERNAME}/stats"
+    rapid_record = {}
+    blitz_record = {}
+    rapid_rating = "N/A"
+    blitz_rating = "N/A"
+    
     try:
-        stats_res = requests.get(stats_url, headers=headers, timeout=15)
-        stats_res.raise_for_status()
-        stats = stats_res.json()
+        pub_headers = {"User-Agent": f"GitHubPagesIntegration/1.0 (contact: {CONTACT_EMAIL})"}
+        stats_res = requests.get(stats_url, headers=pub_headers, timeout=15)
+        if stats_res.status_code == 200:
+            stats = stats_res.json()
+            rapid_record = stats.get("chess_rapid", {}).get("record", {})
+            blitz_record = stats.get("chess_blitz", {}).get("record", {})
+            rapid_rating = stats.get("chess_rapid", {}).get("last", {}).get("rating", "N/A")
+            blitz_rating = stats.get("chess_blitz", {}).get("last", {}).get("rating", "N/A")
+            
+            # Backups in case callback failed
+            if puzzle_rating == "N/A":
+                # Fallback to PubAPI tactics highest
+                highest_puzzle_rating = stats.get("tactics", {}).get("highest", {}).get("rating", "N/A")
+            if puzzle_rush_best == "N/A":
+                puzzle_rush_best = stats.get("puzzle_rush", {}).get("best", {}).get("score", "N/A")
     except Exception as e:
-        print(f"Error fetching statistics: {e}")
-        stats = {}
-    
-    # Extract ratings
-    puzzle_rating = stats.get("tactics", {}).get("last", {}).get("rating", "N/A")
-    highest_puzzle_rating = stats.get("tactics", {}).get("highest", {}).get("rating", "N/A")
-    puzzle_rush_best = stats.get("puzzle_rush", {}).get("best", {}).get("score", "N/A")
-    
-    # Extract win/loss/draw records for Daily/Rapid/Blitz to add rich stats
-    rapid_record = stats.get("chess_rapid", {}).get("record", {})
-    blitz_record = stats.get("chess_blitz", {}).get("record", {})
-    rapid_rating = stats.get("chess_rapid", {}).get("last", {}).get("rating", "N/A")
-    blitz_rating = stats.get("chess_blitz", {}).get("last", {}).get("rating", "N/A")
-    
-    # 2. Fetch Games for Streak Calculation
-    archives_url = f"https://api.chess.com/pub/player/{USERNAME}/games/archives"
+        print(f"Error fetching PubAPI stats: {e}")
+        
+    # 3. Scrape Member Profile page for official active daily/puzzle streak count!
+    member_url = f"https://www.chess.com/member/{USERNAME}"
     active_streak = 0
-    total_games_analyzed = 0
-    played_dates = set()
     
     try:
-        archives_res = requests.get(archives_url, headers=headers, timeout=15)
-        if archives_res.status_code == 200:
-            archives = archives_res.json().get("archives", [])
-            if archives:
-                # Fetch games from the last 2 monthly archives to guarantee continuity
-                recent_archives = archives[-2:]
-                
-                for archive_url in recent_archives:
-                    print(f"Analyzing games from archive: {archive_url.split('/')[-2:]}")
-                    games_res = requests.get(archive_url, headers=headers, timeout=15)
-                    if games_res.status_code == 200:
-                        games = games_res.json().get("games", [])
-                        total_games_analyzed += len(games)
-                        for game in games:
-                            end_time = game.get("end_time")
-                            if end_time:
-                                # Convert epoch to Mountain Time date string (YYYY-MM-DD)
-                                date_str = datetime.fromtimestamp(end_time, tz=LOCAL_TZ).strftime("%Y-%m-%d")
-                                played_dates.add(date_str)
-            
-            # Sort dates descending (most recent first)
-            sorted_dates = sorted([datetime.strptime(d, "%Y-%m-%d").date() for d in played_dates], reverse=True)
-            
-            # Calculate active daily game streak
-            today = datetime.now(LOCAL_TZ).date()
-            yesterday = today - timedelta(days=1)
-            
-            # Replicating Chess.com's Official 2-day Grace Period:
-            # Gaps of <= 3 days between game days maintain the streak, rather than strict consecutive days.
-            if sorted_dates and (sorted_dates[0] == today or sorted_dates[0] == yesterday or (today - sorted_dates[0]).days <= 2):
-                active_streak = 1
-                curr_date = sorted_dates[0]
-                
-                for next_date in sorted_dates[1:]:
-                    diff = (curr_date - next_date).days
-                    if diff <= 3:  # Meets Chess.com official grace period tolerance
-                        if diff > 0:
-                            active_streak += 1
-                        curr_date = next_date
-                    else:
-                        break  # Streak broken
+        member_res = requests.get(member_url, headers=headers, timeout=15)
+        if member_res.status_code == 200:
+            streak_match = re.search(r'streakCount:\s*(\d+)', member_res.text)
+            if streak_match:
+                active_streak = int(streak_match.group(1))
+                print(f"Scraped active streak from profile page: {active_streak} days")
             else:
-                active_streak = 0
-                
-            print(f"Calculated active streak: {active_streak} days. Played days: {len(played_dates)}")
+                print("Could not find streakCount variable in profile HTML.")
     except Exception as e:
-        print(f"Error calculating game streaks: {e}")
+        print(f"Error scraping profile page for streak: {e}")
+
+    # 4. Load existing JSON data to preserve rating history
+    rating_history = []
+    if os.path.exists(OUTPUT_PATH):
+        try:
+            with open(OUTPUT_PATH, "r") as f:
+                existing_data = json.load(f)
+                rating_history = existing_data.get("rating_history", [])
+        except Exception as e:
+            print(f"Error reading existing data file: {e}")
+
+    # 5. Update Rating History over time
+    today_str = datetime.now(LOCAL_TZ).strftime("%Y-%m-%d")
+    
+    # If we got a valid puzzle rating, update the history
+    if isinstance(puzzle_rating, int):
+        # Check if today is already in history, or if rating has changed
+        date_exists = False
+        for entry in rating_history:
+            if entry.get("date") == today_str:
+                entry["rating"] = puzzle_rating  # Update today's rating
+                date_exists = True
+                break
+        
+        if not date_exists:
+            # If date doesn't exist, append new entry
+            rating_history.append({
+                "date": today_str,
+                "rating": puzzle_rating
+            })
+            
+        # Optional: Limit history length to last 180 entries to prevent huge files,
+        # but keep it high enough for robust charts!
+        rating_history = rating_history[-180:]
 
     # Assemble payload
     payload = {
@@ -106,8 +130,7 @@ def fetch_chess_data():
         "rapid_record": rapid_record,
         "blitz_record": blitz_record,
         "active_game_streak": active_streak,
-        "total_active_days": len(played_dates),
-        "total_games_analyzed": total_games_analyzed,
+        "rating_history": rating_history,
         "last_updated": datetime.now(timezone.utc).isoformat()
     }
     
@@ -116,7 +139,7 @@ def fetch_chess_data():
     with open(OUTPUT_PATH, "w") as f:
         json.dump(payload, f, indent=4)
         
-    print(f"Chess.com integration completed. Saved to {OUTPUT_PATH}")
+    print(f"Chess.com integration completed. Streak: {active_streak}, Rating: {puzzle_rating}. Saved to {OUTPUT_PATH}")
 
 if __name__ == "__main__":
     fetch_chess_data()
