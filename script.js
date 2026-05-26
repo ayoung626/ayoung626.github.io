@@ -607,9 +607,6 @@ function loadChessStats() {
   const puzzleEl = document.getElementById('chess-puzzle-rating');
   const peakEl = document.getElementById('chess-puzzle-peak');
   const streakEl = document.getElementById('chess-streak');
-  const rapidEl = document.getElementById('chess-rapid-rating');
-  const blitzEl = document.getElementById('chess-blitz-rating');
-  const recordEl = document.getElementById('chess-rapid-record');
   const updatedEl = document.getElementById('chess-last-updated');
 
   if (!puzzleEl) return;
@@ -623,16 +620,6 @@ function loadChessStats() {
       puzzleEl.innerText = data.puzzle_rating || 'N/A';
       peakEl.innerText = data.highest_puzzle_rating || 'N/A';
       streakEl.innerText = data.active_game_streak !== undefined ? `${data.active_game_streak}d` : '0d';
-      rapidEl.innerText = data.rapid_rating || 'N/A';
-      blitzEl.innerText = data.blitz_rating || 'N/A';
-
-      // Record formatting
-      const rec = data.rapid_record || {};
-      if (rec.win !== undefined && rec.loss !== undefined && rec.draw !== undefined) {
-        recordEl.innerText = `${rec.win}W / ${rec.loss}L / ${rec.draw}D`;
-      } else {
-        recordEl.innerText = 'N/A';
-      }
 
       // Last updated
       if (data.last_updated) {
