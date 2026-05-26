@@ -276,7 +276,7 @@ Available commands:
     about: () => `
 [Andrew Young]
 --------------
-I build data tools, cloud pipelines, and interactive dashboards.
+I write code to process data, model databases, and construct data pipelines.
 - MS in Analytics graduate from Georgia Tech (GPA: 4.0)
 - AWS Certified Solutions Architect Associate
 - Enjoy building simulators, digital board games, and workflow automations.
