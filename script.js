@@ -849,9 +849,9 @@ function loadStravaWorkouts() {
         const dateStr = actDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
         
         let typeIcon = 'footprints';
-        if (act.type === 'Ride') typeIcon = 'bike';
+        if (act.type === 'Ride' || act.type === 'EBikeRide') typeIcon = 'bike';
         else if (act.type === 'Swim') typeIcon = 'waves';
-        else if (act.type === 'WeightTraining') typeIcon = 'dumbbell';
+        else if (act.type === 'WeightTraining' || act.type === 'Workout') typeIcon = 'dumbbell';
 
         const distMiles = (act.distance * 0.000621371).toFixed(2);
         const durHrs = Math.floor(act.moving_time / 3600);
