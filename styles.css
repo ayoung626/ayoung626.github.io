@@ -1733,6 +1733,7 @@ footer {
 .chess-theme::before { background: linear-gradient(90deg, #22c55e, #10b981); }
 .linkedin-theme::before { background: linear-gradient(90deg, #0077b5, var(--accent-cyan)); }
 .strava-theme::before { background: linear-gradient(90deg, #fc6100, var(--accent-pink)); }
+.dayone-theme::before { background: linear-gradient(90deg, #3b82f6, #6366f1); }
 
 .activity-card:hover {
   transform: translateY(-6px);
@@ -1742,6 +1743,7 @@ footer {
 .chess-theme:hover { border-color: rgba(34, 197, 94, 0.3); }
 .linkedin-theme:hover { border-color: rgba(6, 182, 212, 0.3); }
 .strava-theme:hover { border-color: rgba(252, 97, 0, 0.3); }
+.dayone-theme:hover { border-color: rgba(59, 130, 246, 0.3); }
 
 .light-theme .activity-card:hover {
   box-shadow: 0 15px 30px rgba(15, 23, 42, 0.05);
@@ -1775,6 +1777,7 @@ footer {
 .chess-theme .brand-icon-box { color: #22c55e; background: rgba(34, 197, 94, 0.05); border-color: rgba(34, 197, 94, 0.15); }
 .linkedin-theme .brand-icon-box { color: var(--accent-cyan); background: rgba(6, 182, 212, 0.05); border-color: rgba(6, 182, 212, 0.15); }
 .strava-theme .brand-icon-box { color: #fc6100; background: rgba(252, 97, 0, 0.05); border-color: rgba(252, 97, 0, 0.15); }
+.dayone-theme .brand-icon-box { color: #3b82f6; background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.15); }
 
 .brand-icon-box svg {
   width: 22px;
