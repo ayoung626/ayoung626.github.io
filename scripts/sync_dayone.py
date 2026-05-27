@@ -118,6 +118,46 @@ def sync_dayone():
             json.dump(payload, f, indent=2)
             
         print(f"Successfully synced Day One stats: {payload}")
+        
+        # Git Auto-Sync (Pull --rebase, Stage, Commit, and Push)
+        try:
+            print("\nSyncing local Day One changes with GitHub...")
+            import subprocess
+            
+            # Check if there are changes in dayone.json
+            status_proc = subprocess.run(
+                ["git", "status", "--porcelain", out_file],
+                cwd=workspace,
+                capture_output=True,
+                text=True
+            )
+            
+            if status_proc.stdout.strip():
+                # 1. Stage and commit local changes first to prevent pull blockages
+                print("Staging and committing dayone.json...")
+                subprocess.run(["git", "add", out_file], cwd=workspace, check=True)
+                subprocess.run(
+                    ["git", "commit", "-m", "chore: auto-sync Day One journal streak"],
+                    cwd=workspace,
+                    check=True
+                )
+                
+                # 2. Pull remote updates (Chess / Strava) on top of the local commit
+                print("Pulling remote changes from GitHub Actions (rebase)...")
+                subprocess.run(["git", "pull", "--rebase"], cwd=workspace, check=True)
+                
+                # 3. Push everything back to the cloud
+                print("Pushing all merged updates live to GitHub Pages...")
+                subprocess.run(["git", "push"], cwd=workspace, check=True)
+                print("Successfully synced and pushed updated stats to remote!")
+            else:
+                # Still pull even if no Day One changes to keep local repository updated
+                print("No changes in Day One stats. Pulling anyway to keep repository fresh...")
+                subprocess.run(["git", "pull", "--rebase"], cwd=workspace, check=True)
+                
+        except Exception as git_err:
+            print(f"Failed to sync with GitHub: {git_err}")
+            
         return True
     except Exception as e:
         print(f"Error syncing Day One: {e}")
