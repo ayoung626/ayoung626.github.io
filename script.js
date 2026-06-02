@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Global Elements
   initTheme();
   initNavigation();
-  initGlowCursor();
   initCanvasParticles();
   initTerminal();
   initScrollAnimations();
@@ -63,38 +62,12 @@ function initNavigation() {
    1. Theme Management (Midnight & Snow)
    ========================================== */
 function initTheme() {
-  const themeBtn = document.getElementById('theme-toggle');
-  if (!themeBtn) return;
-
-  // Retrieve current preference or default to midnight (dark)
-  const savedTheme = localStorage.getItem('portfolio-theme') || 'dark';
-  
-  if (savedTheme === 'light') {
-    document.documentElement.classList.add('light-theme');
-  } else {
-    document.documentElement.classList.remove('light-theme');
-  }
-
-  themeBtn.addEventListener('click', () => {
-    document.documentElement.classList.toggle('light-theme');
-    const currentTheme = document.documentElement.classList.contains('light-theme') ? 'light' : 'dark';
-    localStorage.setItem('portfolio-theme', currentTheme);
-  });
+  // Retain dark mode as the exclusive theme, discarding cached light-mode preferences
+  document.documentElement.classList.remove('light-theme');
+  localStorage.setItem('portfolio-theme', 'dark');
 }
 
-/* ==========================================
-   2. Glowing Cursor Overlay
-   ========================================== */
-function initGlowCursor() {
-  const glow = document.querySelector('.glow-cursor');
-  if (!glow) return;
 
-  document.addEventListener('mousemove', (e) => {
-    // Center the glow orb on the cursor coordinates
-    glow.style.left = `${e.clientX}px`;
-    glow.style.top = `${e.clientY}px`;
-  });
-}
 
 /* ==========================================
    3. Interactive Canvas Particle Background
@@ -104,12 +77,7 @@ function initCanvasParticles() {
   if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
-  let particlesArray = [];
-  let mouse = {
-    x: null,
-    y: null,
-    radius: 120
-  };
+  let startTime = Date.now();
 
   // Adjust size
   function resizeCanvas() {
@@ -119,136 +87,74 @@ function initCanvasParticles() {
   resizeCanvas();
   window.addEventListener('resize', resizeCanvas);
 
-  // Track Mouse Move
-  window.addEventListener('mousemove', (e) => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-  });
-
-  window.addEventListener('mouseleave', () => {
-    mouse.x = null;
-    mouse.y = null;
-  });
-
-  // Particle Blueprint
-  class Particle {
-    constructor(x, y, directionX, directionY, size, color) {
-      this.x = x;
-      this.y = y;
-      this.directionX = directionX;
-      this.directionY = directionY;
-      this.size = size;
-      this.color = color;
-    }
-
-    // Draw single node
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-      ctx.fillStyle = this.color;
-      ctx.fill();
-    }
-
-    // Move node and boundary collision check
-    update() {
-      if (this.x > canvas.width || this.x < 0) {
-        this.directionX = -this.directionX;
-      }
-      if (this.y > canvas.height || this.y < 0) {
-        this.directionY = -this.directionY;
-      }
-
-      // Check mouse distance interaction
-      let dx = mouse.x - this.x;
-      let dy = mouse.y - this.y;
-      let distance = Math.sqrt(dx * dx + dy * dy);
-
-      if (distance < mouse.radius && mouse.x !== null) {
-        // Soft pull towards cursor
-        this.x -= dx * 0.03;
-        this.y -= dy * 0.03;
-      }
-
-      this.x += this.directionX;
-      this.y += this.directionY;
-      this.draw();
-    }
-  }
-
-  // Generate Particle Array
-  function init() {
-    particlesArray = [];
-    // Adjust count based on screen width
-    let numberOfParticles = Math.floor((canvas.width * canvas.height) / 14000);
-    if (numberOfParticles > 90) numberOfParticles = 90;
-
-    for (let i = 0; i < numberOfParticles; i++) {
-      let size = (Math.random() * 2) + 0.8;
-      let x = Math.random() * (canvas.width - size * 2);
-      let y = Math.random() * (canvas.height - size * 2);
-      let directionX = (Math.random() * 0.4) - 0.2;
-      let directionY = (Math.random() * 0.4) - 0.2;
-
-      // Extract colors from theme
-      let isLightTheme = document.documentElement.classList.contains('light-theme');
-      let color = isLightTheme ? 'rgba(2, 132, 199, 0.15)' : 'rgba(6, 182, 212, 0.18)';
-      
-      particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
-    }
-  }
-
-  // Draw connector links
-  function connect() {
-    let opacityValue = 1;
-    let isLightTheme = document.documentElement.classList.contains('light-theme');
-    let maxDistance = 140;
-
-    for (let a = 0; a < particlesArray.length; a++) {
-      for (let b = a; b < particlesArray.length; b++) {
-        let dx = particlesArray[a].x - particlesArray[b].x;
-        let dy = particlesArray[a].y - particlesArray[b].y;
-        let distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < maxDistance) {
-          opacityValue = 1 - (distance / maxDistance);
-          let linkColor = isLightTheme 
-            ? `rgba(2, 132, 199, ${opacityValue * 0.08})` 
-            : `rgba(6, 182, 212, ${opacityValue * 0.12})`;
-          
-          ctx.strokeStyle = linkColor;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
-          ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
-          ctx.stroke();
-        }
-      }
-    }
-  }
-
-  // Animation Loop
+  // Realistic Bezier Aurora Curtains (Vertical Ray Model)
   function animate() {
     requestAnimationFrame(animate);
+    
+    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Sync colors dynamically in case of theme toggles
-    let isLightTheme = document.documentElement.classList.contains('light-theme');
-    let dynamicColor = isLightTheme ? 'rgba(2, 132, 199, 0.12)' : 'rgba(6, 182, 212, 0.18)';
-    
-    for (let i = 0; i < particlesArray.length; i++) {
-      particlesArray[i].color = dynamicColor;
-      particlesArray[i].update();
+    const time = (Date.now() - startTime) * 0.0008; // 2x wave movement speed
+    const count = 3; // 3 layered curtains
+
+    // Screen composite mode makes overlapping folds glow and brighten volumetrically
+    ctx.globalCompositeOperation = 'screen';
+
+    for (let c = 0; c < count; c++) {
+      // Anchor base heights strictly to the top edge of the screen (in pixels)
+      const baseH = -70 + c * 35;
+      const curtainHeight = 250; // Shortened vertical length of filaments
+
+      const step = 4.0; // Draw a vertical filament every 4 pixels for high density
+      ctx.lineWidth = 8.0; // Widened lines to overlap and diffuse smoothly (with CSS blur)
+
+      for (let x = 0; x < canvas.width; x += step) {
+        // Reduced wave amplitudes to keep waves elegantly confined to the top
+        const waveMacro = Math.sin(x * 0.0012 + time * 0.5 + c * 2.0) * 45 +
+                          Math.cos(x * 0.0006 - time * 0.25) * 20;
+                          
+        const waveMicro = Math.sin(x * 0.012 - time * 2.0 + c * 1.5) * 5;
+        
+        let y = baseH + waveMacro + waveMicro;
+
+        // High-Frequency Pulsing Ionization
+        const pulseNoise = Math.sin(x * 0.04 + time * 2.5 + c * 3.0) * 0.18;
+        
+        // Spatial modulation to separate green and purple curtains horizontally
+        // This prevents them from blending into a single flat teal due to the CSS blur filter
+        const spatialMod = 0.55 + 0.45 * Math.sin(x * 0.0025 + c * 2.2 + time * 0.2);
+        const alpha = 0.24 * (0.6 + pulseNoise) * spatialMod; // Increased baseline intensity to 0.24
+
+        // Realistic Color Stratification Gradients
+        const grad = ctx.createLinearGradient(x, y - 20, x, y + curtainHeight);
+        
+        if (c === 2) {
+          // Dedicated Plum/Purple curtain (lowest base height, drawn last so it is on top and highly visible)
+          grad.addColorStop(0, 'rgba(217, 70, 239, 0)');
+          grad.addColorStop(0.18, `rgba(217, 70, 239, ${alpha * 1.35})`);   // Plum crown (brightened for contrast)
+          grad.addColorStop(0.5, `rgba(162, 28, 175, ${alpha * 0.95})`);     // Deep Violet body
+          grad.addColorStop(0.95, 'rgba(162, 28, 175, 0)');                  // Bottom fade
+        } else {
+          // Mint/Emerald green curtains (c === 0 and c === 1)
+          grad.addColorStop(0, 'rgba(52, 211, 153, 0)');
+          grad.addColorStop(0.2, `rgba(52, 211, 153, ${alpha * 1.15})`);     // Bright Mint
+          grad.addColorStop(0.55, `rgba(16, 185, 129, ${alpha * 0.5})`);      // Emerald
+          grad.addColorStop(0.95, 'rgba(16, 185, 129, 0)');                  // Bottom fade
+        }
+
+        ctx.strokeStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x, y + curtainHeight);
+        ctx.stroke();
+      }
     }
-    connect();
+
+    // Reset styles
+    ctx.globalCompositeOperation = 'source-over';
   }
 
-  init();
   animate();
-
-  // Re-initialize on window resize
-  window.addEventListener('resize', () => {
-    init();
-  });
 }
 
 /* ==========================================
@@ -692,8 +598,8 @@ function drawRatingChart(canvas, history) {
   
   // Draw glowing background fill gradient under the line
   const fillGrad = ctx.createLinearGradient(0, 0, 0, h);
-  fillGrad.addColorStop(0, 'rgba(6, 182, 212, 0.15)');
-  fillGrad.addColorStop(1, 'rgba(6, 182, 212, 0.0)');
+  fillGrad.addColorStop(0, 'rgba(52, 211, 153, 0.15)');
+  fillGrad.addColorStop(1, 'rgba(52, 211, 153, 0.0)');
   
   ctx.beginPath();
   ctx.moveTo(points[0].x, h);
@@ -705,8 +611,8 @@ function drawRatingChart(canvas, history) {
   
   // Draw the smooth line gradient
   const lineGrad = ctx.createLinearGradient(0, 0, w, 0);
-  lineGrad.addColorStop(0, '#06b6d4'); // Cyan
-  lineGrad.addColorStop(1, '#8b5cf6'); // Purple
+  lineGrad.addColorStop(0, '#34d399'); // Mint Green
+  lineGrad.addColorStop(1, '#10b981'); // Sage/Emerald Green
   
   ctx.beginPath();
   ctx.moveTo(points[0].x, points[0].y);
@@ -725,7 +631,7 @@ function drawRatingChart(canvas, history) {
   
   ctx.strokeStyle = lineGrad;
   ctx.lineWidth = 2.5;
-  ctx.shadowColor = 'rgba(6, 182, 212, 0.35)';
+  ctx.shadowColor = 'rgba(52, 211, 153, 0.35)';
   ctx.shadowBlur = 6;
   ctx.stroke();
   
@@ -736,7 +642,7 @@ function drawRatingChart(canvas, history) {
   const lastPt = points[points.length - 1];
   ctx.beginPath();
   ctx.arc(lastPt.x, lastPt.y, 4, 0, Math.PI * 2);
-  ctx.fillStyle = '#8b5cf6';
+  ctx.fillStyle = '#fbbf24';
   ctx.fill();
   ctx.strokeStyle = '#fff';
   ctx.lineWidth = 1.5;

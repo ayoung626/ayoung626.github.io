@@ -639,8 +639,8 @@ function renderDistributionChart() {
   const isDark = !document.body.classList.contains('light-theme');
   const textColor = isDark ? '#94a3b8' : '#64748b';
   const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
-  const barGradientStart = isDark ? '#06b6d4' : '#0284c7'; // cyan vs. blue
-  const barGradientEnd = isDark ? '#8b5cf6' : '#ec4899';   // purple vs. pink
+  const barGradientStart = isDark ? '#34d399' : '#059669'; // Mint vs. Dark Mint
+  const barGradientEnd = isDark ? '#10b981' : '#047857';   // Emerald vs. Dark Emerald
   
   // Canvas Padding
   const padding = { top: 30, right: 30, bottom: 40, left: 45 };

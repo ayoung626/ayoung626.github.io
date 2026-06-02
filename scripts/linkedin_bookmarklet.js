@@ -13,22 +13,22 @@ javascript:(function(){
   const CSS = `
     #lk-sync-modal {
       position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      width: 420px; background: rgba(15, 23, 42, 0.98); border: 1px solid #06b6d4;
+      width: 420px; background: rgba(15, 23, 42, 0.98); border: 1px solid #34d399;
       border-radius: 16px; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif;
-      padding: 24px; z-index: 999999; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6), 0 0 45px rgba(6, 182, 212, 0.2);
+      padding: 24px; z-index: 999999; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.6), 0 0 45px rgba(52, 211, 153, 0.2);
       backdrop-filter: blur(20px); box-sizing: border-box;
     }
     #lk-sync-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.8); z-index: 999998; backdrop-filter: blur(5px);
     }
-    .lk-sync-title { font-size: 20px; font-weight: 700; color: #06b6d4; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px; }
+    .lk-sync-title { font-size: 20px; font-weight: 700; color: #34d399; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px; }
     .lk-sync-label { display: block; font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 600; margin-bottom: 4px; }
     .lk-sync-input { width: 100%; padding: 8px 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; margin-bottom: 12px; font-size: 13px; box-sizing: border-box; }
-    .lk-sync-input:focus { outline: none; border-color: #06b6d4; background: rgba(255,255,255,0.1); }
+    .lk-sync-input:focus { outline: none; border-color: #34d399; background: rgba(255,255,255,0.1); }
     .lk-sync-row { display: flex; gap: 12px; }
     .lk-sync-col { flex: 1; }
-    .lk-sync-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #06b6d4, #8b5cf6); border: none; border-radius: 8px; color: #fff; font-weight: 700; cursor: pointer; font-size: 14px; margin-top: 8px; transition: opacity 0.2s; }
+    .lk-sync-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #34d399, #10b981); border: none; border-radius: 8px; color: #fff; font-weight: 700; cursor: pointer; font-size: 14px; margin-top: 8px; transition: opacity 0.2s; }
     .lk-sync-btn:hover { opacity: 0.9; }
     .lk-sync-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: #64748b; font-size: 22px; cursor: pointer; line-height: 1; }
     .lk-sync-close:hover { color: #f8fafc; }
@@ -102,7 +102,7 @@ javascript:(function(){
     </div>
 
     <div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 8px 0 12px 0; padding-top: 12px;">
-      <span class="lk-sync-label" style="color: #06b6d4; margin-bottom: 8px;">Verify Extracted Daily Streaks</span>
+      <span class="lk-sync-label" style="color: #34d399; margin-bottom: 8px;">Verify Extracted Daily Streaks</span>
       <div class="lk-sync-row">
         <div class="lk-sync-col">
           <label class="lk-sync-label">👑 Queens</label>
