@@ -507,7 +507,6 @@ function initArchitectureModal() {
 function initActivityDashboard() {
   loadChessStats();
   loadStravaWorkouts();
-  loadDayOneStats();
 }
 
 function loadChessStats() {
@@ -847,42 +846,4 @@ function loadStravaWorkouts() {
     });
 }
 
-function loadDayOneStats() {
-  const streakEl = document.getElementById('dayone-streak');
-  const longestEl = document.getElementById('dayone-longest');
-  const totalEl = document.getElementById('dayone-total');
-  const updatedEl = document.getElementById('dayone-last-updated');
-
-  if (!streakEl) return;
-
-  // Try to load Day One data
-  fetch('assets/data/dayone.json')
-    .then(res => {
-      if (!res.ok) throw new Error('Data file not found');
-      return res.json();
-    })
-    .then(data => {
-      streakEl.innerText = data.current_streak !== undefined ? `${data.current_streak}d` : '0d';
-      longestEl.innerText = data.longest_streak !== undefined ? `${data.longest_streak}d` : '0d';
-      totalEl.innerText = data.total_entries || '0';
-
-      if (data.last_updated) {
-        const updateDate = new Date(data.last_updated);
-        updatedEl.innerText = `Synced: ${updateDate.toLocaleDateString()}`;
-      } else {
-        updatedEl.innerText = 'Synced';
-      }
-
-      if (window.lucide) window.lucide.createIcons();
-    })
-    .catch(err => {
-      console.warn('Could not load Day One stats:', err);
-      // Demo Fallback Mode
-      streakEl.innerText = '1242d';
-      longestEl.innerText = '1242d';
-      totalEl.innerText = '1307';
-      updatedEl.innerText = 'Demo Mode';
-      if (window.lucide) window.lucide.createIcons();
-    });
-}
 
