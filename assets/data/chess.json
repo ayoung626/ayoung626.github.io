@@ -1,21 +1,13 @@
 {
     "username": "Cobalt626",
-    "puzzle_rating": 1723,
+    "puzzle_rating": 1714,
     "highest_puzzle_rating": 1804,
     "puzzle_rush_best": 35,
-    "rapid_rating": 1181,
-    "blitz_rating": 1054,
-    "rapid_record": {
-        "win": 59,
-        "loss": 68,
-        "draw": 1
-    },
-    "blitz_record": {
-        "win": 35,
-        "loss": 42,
-        "draw": 2
-    },
-    "active_game_streak": 278,
+    "rapid_rating": "N/A",
+    "blitz_rating": "N/A",
+    "rapid_record": {},
+    "blitz_record": {},
+    "active_game_streak": 279,
     "rating_history": [
         {
             "date": "2026-05-20",
@@ -327,8 +319,8 @@
         },
         {
             "date": "2026-08-05",
-            "rating": 1723
+            "rating": 1714
         }
     ],
-    "last_updated": "2026-08-05T08:24:19.701228+00:00"
+    "last_updated": "2026-08-05T19:19:25.317095+00:00"
 }
