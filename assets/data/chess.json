@@ -3,10 +3,18 @@
     "puzzle_rating": 1714,
     "highest_puzzle_rating": 1804,
     "puzzle_rush_best": 35,
-    "rapid_rating": "N/A",
-    "blitz_rating": "N/A",
-    "rapid_record": {},
-    "blitz_record": {},
+    "rapid_rating": 1181,
+    "blitz_rating": 1054,
+    "rapid_record": {
+        "win": 59,
+        "loss": 68,
+        "draw": 1
+    },
+    "blitz_record": {
+        "win": 35,
+        "loss": 42,
+        "draw": 2
+    },
     "active_game_streak": 279,
     "rating_history": [
         {
@@ -320,7 +328,11 @@
         {
             "date": "2026-08-05",
             "rating": 1714
+        },
+        {
+            "date": "2026-08-06",
+            "rating": 1714
         }
     ],
-    "last_updated": "2026-08-05T19:19:25.317095+00:00"
+    "last_updated": "2026-08-06T08:21:57.597886+00:00"
 }
