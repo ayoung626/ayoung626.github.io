@@ -1,6 +1,6 @@
 {
     "username": "Cobalt626",
-    "puzzle_rating": 1641,
+    "puzzle_rating": 1616,
     "highest_puzzle_rating": 1804,
     "puzzle_rush_best": 35,
     "rapid_rating": 1181,
@@ -508,7 +508,11 @@
         {
             "date": "2026-09-19",
             "rating": 1641
+        },
+        {
+            "date": "2026-09-20",
+            "rating": 1616
         }
     ],
-    "last_updated": "2026-09-19T19:51:45.764382+00:00"
+    "last_updated": "2026-09-20T10:23:46.789999+00:00"
 }
