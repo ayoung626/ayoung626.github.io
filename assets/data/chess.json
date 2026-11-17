@@ -1,6 +1,6 @@
 {
     "username": "Cobalt626",
-    "puzzle_rating": 1548,
+    "puzzle_rating": 1530,
     "highest_puzzle_rating": 1804,
     "puzzle_rush_best": 35,
     "rapid_rating": 1181,
@@ -15,7 +15,7 @@
         "loss": 42,
         "draw": 2
     },
-    "active_game_streak": 370,
+    "active_game_streak": 371,
     "rating_history": [
         {
             "date": "2026-05-21",
@@ -735,8 +735,8 @@
         },
         {
             "date": "2026-11-16",
-            "rating": 1548
+            "rating": 1530
         }
     ],
-    "last_updated": "2026-11-16T14:28:09.403366+00:00"
+    "last_updated": "2026-11-17T01:23:57.147084+00:00"
 }
