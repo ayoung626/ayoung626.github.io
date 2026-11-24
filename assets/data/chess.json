@@ -15,12 +15,8 @@
         "loss": 42,
         "draw": 2
     },
-    "active_game_streak": 378,
+    "active_game_streak": 379,
     "rating_history": [
-        {
-            "date": "2026-05-28",
-            "rating": 1570
-        },
         {
             "date": "2026-05-29",
             "rating": 1570
@@ -736,7 +732,11 @@
         {
             "date": "2026-11-23",
             "rating": 1541
+        },
+        {
+            "date": "2026-11-24",
+            "rating": 1541
         }
     ],
-    "last_updated": "2026-11-24T03:41:09.256179+00:00"
+    "last_updated": "2026-11-24T16:48:46.076511+00:00"
 }
